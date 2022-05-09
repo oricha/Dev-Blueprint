@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC "-//Puppy Crawl//DTD Suppressions 1.1//EN" "puppycrawl.com/dtds/suppressions_1_1.dtd">
+<suppressions>
+
+    <!-- Suppressions for unit testing code -->
+    <suppress checks="MagicNumber" files="[/\\]src[/\\]test[/\\]java[/\\]"/>
+
+    <!-- Global suppressions -->
+
+    <suppress checks="MagicNumber" files=".*"/>
+    <suppress checks="Javadoc" files=".*"/>
+    <suppress checks="LineLength" files=".*"/>
+    <suppress checks="NewlineAtEndOfFile" files=".*"/>
+    <suppress checks="HideUtilityClassConstructor" files="Application.java"/> <!-- To handle @EnableEurekaClient -->
+    <suppress checks="VisibilityModifier" files="[/\\]src[/\\]main[/\\]java[/\\].*(exception|model|Table.java)"/>
+
+    <suppress checks="." files="[/\\]src[/\\]test[/\\]java[/\\]"/>
+
+    <!-- Suppressions for cucumber tests  -->
+
+    <suppress checks="." files="[/\\]src[/\\]cucumber[/\\]java[/\\]"/>
+
+</suppressions>
