@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"  # Puerto principal para servicios AWS
+      - "4571:4571"  # Endpoint alternativo (ya no es obligatorio)
+    environment:
+      - SERVICES=s3,sqs,sns,dynamodb,lambda,cloudwatch
+      - DEFAULT_REGION=us-east-1
+      - DEBUG=1
+    volumes:
+      - "./localstack:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
