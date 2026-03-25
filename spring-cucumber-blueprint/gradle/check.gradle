@@ -1,0 +1,124 @@
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+apply plugin: 'jacoco'
+apply plugin: 'info.solidsoft.pitest'
+
+sourceSets {
+    java {
+        test {
+            java.srcDir file('src/test/java')
+        }
+    }
+}
+
+checkstyle {
+    ignoreFailures = true
+    configFile = rootProject.file('codequality/checkstyle.xml')
+}
+
+findbugs {
+    ignoreFailures = false
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.withMessages = true
+    }
+}
+
+task checkstyleHtml {
+    group = "Verification"
+    description = "Creates a human readable Checkstyle report"
+    doLast {
+        ant.xslt(in: checkstyleMain.reports.xml.destination,
+                style: file('codequality/checkstyle-noframes-sorted.xsl'),
+                out: new File(checkstyleMain.reports.xml.destination.parent, 'main.html'))
+    }
+}
+checkstyleMain.finalizedBy checkstyleHtml
+
+task findbugsHtml {
+    group = "Verification"
+    description = "Creates a human readable Findbugs report"
+    doLast {
+        ant.xslt(in: file("$buildDir/reports/findbugs/main.xml"),
+                style: file('codequality/findbugs_default.xsl'),
+                out: new File("$buildDir/reports/findbugs/main.html"))
+    }
+}
+findbugsMain.finalizedBy findbugsHtml
+
+task findbugsTestHtml {
+    group = "Verification"
+    description = "Creates a human readable Findbugs report"
+    doLast {
+        ant.xslt(in: file("$buildDir/reports/findbugs/test.xml"),
+                style: file('codequality/findbugs_default.xsl'),
+                out: new File("$buildDir/reports/findbugs/test.html"))
+    }
+}
+findbugsTest.finalizedBy findbugsTestHtml
+
+task findbugsCucumberHtml {
+    group = "Verification"
+    description = "Creates a human readable Findbugs report"
+    doLast {
+        ant.xslt(in: file("$buildDir/reports/findbugs/cucumber.xml"),
+                style: file('codequality/findbugs_default.xsl'),
+                out: new File("$buildDir/reports/findbugs/cucumber.html"))
+    }
+}
+findbugsCucumber.finalizedBy findbugsCucumberHtml
+
+jacoco {
+    toolVersion = "0.7.4.201502262128"
+    reportsDir = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/reports/jacoco"
+    }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['*com/karel/somepath/*'])
+        })
+    }
+}
+
+test {
+    jacoco {
+        append = false
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpFile = file("$buildDir/jacoco/classpathdumps")
+    }
+
+    systemProperties = [
+            'archaius.deployment.applicationId': 'adjustmentservice',
+            'archaius.deployment.environment'  : "local",
+            'log4j.configurationFile'          : 'log4j2-local.xml'
+    ]
+
+    finalizedBy(project.tasks.jacocoTestReport, project.tasks.pitest)
+}
+
+pitest {
+    reportDir = "$buildDir/reports/pit"
+    targetClasses = ['com.karel.*']             // make sure classes are correct
+    testSourceSets = [sourceSets.test]             // make sure classes are correct
+    targetTests = ['com.karel.*']
+    timestampedReports = false                   // See spec on github
+    enableDefaultIncrementalAnalysis = true      // See spec on github
+    detectInlinedCode = true                     // See spec on github
+    failWhenNoMutations = false                  // Self Explanatory
+    outputFormats = ['XML', 'HTML']              // XML needed for QMA
+    verbose = true                               // Verbosity
+    pitestVersion = "1.1.8"                      // Pitest version
+    jvmArgs = ['-Xmx2048m']                      // JVM Args
+    excludedClasses = [
+            'com.karel.*']
+}
