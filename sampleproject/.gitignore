@@ -1,0 +1,33 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+build/
+*.class
+target/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS artefacts
+.DS_Store
+Thumbs.db
+
+# AI / editor config (keep .claude/ but ignore local overrides)
+.claude/settings.local.json
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Persistence / memory (may contain sensitive data)
+src/persistence/memory/

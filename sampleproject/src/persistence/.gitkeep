@@ -1,0 +1,8 @@
+# This folder holds database models, migration files, and AI agent memory /
+# transcript persistence. Add your ORM models and migration scripts here.
+#
+# Suggested layout:
+#   src/persistence/
+#   ├── models/          – ORM entity definitions
+#   ├── migrations/      – ordered DB migration files
+#   └── memory/          – long-term AI agent state / conversation transcripts

@@ -1,0 +1,41 @@
+{
+  "projectName": "SampleProject",
+  "description": "AI-agent-optimised project template",
+
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(node tools/scripts/*)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(rm -rf *)",
+      "Bash(DROP TABLE*)",
+      "Bash(npm run db:migrate:prod)"
+    ]
+  },
+
+  "tools": {
+    "web_search": true,
+    "file_read": true,
+    "file_write": true,
+    "bash": true
+  },
+
+  "context": {
+    "always_include": [
+      "CLAUDE.md",
+      "docs/architecture.md"
+    ]
+  },
+
+  "hooks": {
+    "post_task": ".claude/hooks/notify-slack.sh",
+    "pre_commit": ".claude/hooks/pre-commit-check.sh"
+  }
+}
